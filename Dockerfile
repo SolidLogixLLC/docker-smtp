@@ -1,7 +1,5 @@
 FROM debian:buster
 
-MAINTAINER Oluwaseun Obajobi "oluwaseun.obajobi@namshi.com"
-
 RUN apt-get update && \
     apt-get install -y exim4-daemon-light && \
     apt-get clean && \
@@ -14,6 +12,14 @@ COPY set-exim4-update-conf /bin/
 RUN chmod a+x /bin/entrypoint.sh && \
     chmod a+x /bin/set-exim4-update-conf
 
+COPY ./etc/
+
+RUN mkdir -p /opt/app-root
+
+RUN chown -R 1001:1001 /opt/app-root
+
+USER 1001
+
 EXPOSE 25
 ENTRYPOINT ["/bin/entrypoint.sh"]
-CMD ["exim", "-bd", "-q15m", "-v"]
+CMD ["exim", "-bd", "-q15m", "-v", "-D", "/opt/app-root/exim4.conf.localmacros"]
