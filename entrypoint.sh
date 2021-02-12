@@ -2,18 +2,18 @@
 set -e
 
 # Initialize localmacros as an empty file
-echo -n "" > src/app-root/exim4.conf.localmacros
+echo -n "" > src/exim4.conf.localmacros
 
 if [ "$MAILNAME" ]; then
-	echo "MAIN_HARDCODE_PRIMARY_HOSTNAME = $MAILNAME" > src/app-root/exim4.conf.localmacros
+	echo "MAIN_HARDCODE_PRIMARY_HOSTNAME = $MAILNAME" > src/exim4.conf.localmacros
 	echo $MAILNAME > /etc/mailname
 fi
 
 if [ "$KEY_PATH" -a "$CERTIFICATE_PATH" ]; then
 	if [ "$MAILNAME" ]; then
-	  echo "MAIN_TLS_ENABLE = yes" >>  src/app-root/exim4.conf.localmacros
+	  echo "MAIN_TLS_ENABLE = yes" >>  src/exim4.conf.localmacros
 	else
-	  echo "MAIN_TLS_ENABLE = yes" >>  src/app-root/exim4.conf.localmacros
+	  echo "MAIN_TLS_ENABLE = yes" >>  src/exim4.conf.localmacros
 	fi
 	cp $KEY_PATH /etc/exim4/exim.key
 	cp $CERTIFICATE_PATH /etc/exim4/exim.crt
@@ -30,7 +30,7 @@ opts=(
 )
 
 if [ "$DISABLE_IPV6" ]; then
-        echo 'disable_ipv6=true' >> src/app-root/exim4.conf.localmacros
+        echo 'disable_ipv6=true' >> src/exim4.conf.localmacros
 fi
 
 if [ "$GMAIL_USER" -a "$GMAIL_PASSWORD" ]; then
@@ -76,7 +76,7 @@ fi
 
 # allow to add additional macros by bind-mounting a file
 if [ -f /etc/exim4/_docker_additional_macros ]; then
-	cat /etc/exim4/_docker_additional_macros >> src/app-root/exim4.conf.localmacros
+	cat /etc/exim4/_docker_additional_macros >> src/exim4.conf.localmacros
 fi
 
 /bin/set-exim4-update-conf "${opts[@]}"
